@@ -1,0 +1,11 @@
+.next/
+node_modules/
+.tools/
+backups/
+certificates/
+*.log
+*.pid
+*.local
+.env
+.env.*
+!.env.example
