@@ -65,6 +65,7 @@ export async function POST(request: Request) {
   const pass = process.env.SMTP_PASS;
   const to = process.env.INQUIRY_TO || "gsq@jindaquan.com";
   const from = process.env.INQUIRY_FROM || user;
+  const proxy = process.env.SMTP_PROXY;
 
   if (!host || !user || !pass || !from) {
     return NextResponse.json(
@@ -76,7 +77,8 @@ export async function POST(request: Request) {
   const transporter = nodemailer.createTransport({
     host,
     port,
-    secure: port === 465,
+    secure: port === 465 || port === 994,
+    ...(proxy ? { proxy } : {}),
     auth: {
       user,
       pass,
