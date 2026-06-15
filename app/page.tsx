@@ -1,5 +1,6 @@
 ﻿"use client";
 
+import { useEffect, useState } from "react";
 import {
   ArrowRight,
   Beaker,
@@ -17,6 +18,7 @@ import {
   ShieldCheck,
   Sparkles,
   Target,
+  X,
 } from "lucide-react";
 import { SiteHeader } from "./components/SiteHeader";
 import { useI18n } from "./i18n/I18nProvider";
@@ -25,7 +27,7 @@ const productImages = [
   "/assets/transparent-impact-modifier-granules-angle.png",
   "/assets/plastic-stiffening-agent-colored-masterbatch.png",
   "/assets/plastic-flame-retardant-burn-test.png",
-  "/assets/plastic-compatibilizer-powder-pellets.png",
+  "/assets/plastic-compatibilizer-powder-pellets-v3.png",
   "/assets/light-diffusion-powder-diffuser.png",
   "/assets/modified-pvc-liquid-plastisol-closeup.png",
 ];
@@ -37,6 +39,42 @@ const factoryMapSrc =
 
 export default function Home() {
   const { t } = useI18n();
+  const [inquiryStatus, setInquiryStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [inquiryMessage, setInquiryMessage] = useState("");
+
+  useEffect(() => {
+    if (window.location.search && window.location.hash === "#contact") {
+      window.history.replaceState(null, "", `${window.location.pathname}#contact`);
+    }
+  }, []);
+
+  async function handleInquirySubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    setInquiryStatus("sending");
+    setInquiryMessage("Sending your inquiry...");
+
+    try {
+      const response = await fetch("/api/inquiry", {
+        method: "POST",
+        body: formData,
+      });
+      const result = (await response.json()) as { message?: string };
+
+      if (!response.ok) {
+        throw new Error(result.message || "Unable to send inquiry.");
+      }
+
+      setInquiryStatus("success");
+      setInquiryMessage(result.message || "Inquiry sent successfully. We will contact you soon.");
+      form.reset();
+    } catch (error) {
+      setInquiryStatus("error");
+      setInquiryMessage(error instanceof Error ? error.message : "Unable to send inquiry.");
+    }
+  }
 
   return (
     <main>
@@ -217,7 +255,7 @@ export default function Home() {
           </div>
         </div>
 
-        <form className="rfq-form" action="#contact" method="get">
+        <form className="rfq-form" action="/api/inquiry" method="post" onSubmit={handleInquirySubmit}>
           <label>
             {t.contact.form.name}
             <input name="Name" placeholder={t.contact.form.namePlaceholder} required />
@@ -249,13 +287,55 @@ export default function Home() {
             {t.contact.form.message}
             <textarea name="Message" rows={5} placeholder={t.contact.form.messagePlaceholder} />
           </label>
-          <button className="button button-primary form-wide" type="submit">
+          <button className="button button-primary form-wide" type="submit" disabled={inquiryStatus === "sending"}>
             <ClipboardList size={18} />
-            {t.contact.form.submit}
+            {inquiryStatus === "sending" ? "Sending..." : t.contact.form.submit}
           </button>
-          <p className="form-note">{t.contact.form.note}</p>
+          {inquiryMessage ? (
+            <p className={`form-response form-response-${inquiryStatus}`} role="status">
+              {inquiryMessage}
+            </p>
+          ) : null}
+          <p className="form-note">After submitting, wait for the confirmation message above.</p>
         </form>
       </section>
+
+      {inquiryStatus === "success" ? (
+        <div className="thank-you-overlay" role="presentation">
+          <section className="thank-you-dialog" role="dialog" aria-modal="true" aria-labelledby="thank-you-title">
+            <button
+              className="thank-you-close"
+              type="button"
+              aria-label="Close thank you message"
+              onClick={() => {
+                setInquiryStatus("idle");
+                setInquiryMessage("");
+              }}
+            >
+              <X size={18} />
+            </button>
+            <div className="thank-you-icon" aria-hidden="true">
+              <CheckCircle2 size={28} />
+            </div>
+            <span>RFQ submitted</span>
+            <h2 id="thank-you-title">Thank you for your inquiry</h2>
+            <p>
+              Your request has been sent to the ARGIOPE Jindaquan team. We will review your material,
+              application and target performance, then contact you by email.
+            </p>
+            <button
+              className="button button-primary"
+              type="button"
+              onClick={() => {
+                setInquiryStatus("idle");
+                setInquiryMessage("");
+              }}
+            >
+              Continue browsing
+            </button>
+          </section>
+        </div>
+      ) : null}
 
       <footer className="site-footer" id="resources">
         <div>
@@ -288,4 +368,3 @@ export default function Home() {
     </main>
   );
 }
-
