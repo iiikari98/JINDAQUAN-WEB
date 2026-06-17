@@ -14,7 +14,7 @@ export function SiteHeader({ anchorPrefix = "" }: { anchorPrefix?: "" | "/" }) {
     <header className="site-header">
       <a className="brand" href={sectionHref("#top")} aria-label="ARGIOPE Jindaquan home">
         <span className="brand-mark" aria-hidden="true">
-          <span />
+          <img src="/assets/argiope-logo-mark.png" alt="" />
         </span>
         <span>
           <strong>ARGIOPE</strong>

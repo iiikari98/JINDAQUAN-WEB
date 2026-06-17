@@ -8,7 +8,9 @@ export const metadata: Metadata = {
   description:
     "ARGIOPE Jindaquan is a China-based manufacturer of plastic and rubber polymer functional additives for global B2B buyers, with TDS/SDS, samples and technical support available.",
   icons: {
-    icon: "/favicon.svg",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/apple-touch-icon.png",
   },
   alternates: {
     canonical: "/",

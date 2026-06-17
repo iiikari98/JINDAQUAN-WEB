@@ -104,14 +104,14 @@ export default function Home() {
 
         <div className="hero-visual" aria-label="Plastic additive product samples">
           <div className="visual-card visual-large">
-            <img src="/assets/transparent-impact-modifier-closeup.png" alt={t.hero.visualAlt.granules} />
+            <img src="/assets/transparent-impact-modifier-cleanlab-v2.png" alt={t.hero.visualAlt.granules} />
           </div>
           <div className="visual-stack">
             <div className="visual-card">
               <img src="/assets/liquid-impact-modifier-cleanlab.png" alt={t.hero.visualAlt.liquid} />
             </div>
             <div className="visual-card">
-              <img src="/assets/matting-agent-powder-closeup.png" alt={t.hero.visualAlt.matting} />
+              <img src="/assets/matting-agent-powder-cleanlab-v6.png" alt={t.hero.visualAlt.matting} />
             </div>
           </div>
         </div>
@@ -285,7 +285,7 @@ export default function Home() {
           </label>
           <label className="form-wide">
             {t.contact.form.message}
-            <textarea name="Message" rows={5} placeholder={t.contact.form.messagePlaceholder} />
+            <textarea name="Message" rows={5} placeholder={t.contact.form.messagePlaceholder} required />
           </label>
           <button className="button button-primary form-wide" type="submit" disabled={inquiryStatus === "sending"}>
             <ClipboardList size={18} />
@@ -341,7 +341,7 @@ export default function Home() {
         <div>
           <a className="brand footer-brand" href="#top" aria-label="ARGIOPE Jindaquan home">
             <span className="brand-mark" aria-hidden="true">
-              <span />
+              <img src="/assets/argiope-logo-mark.png" alt="" />
             </span>
             <span>
               <strong>ARGIOPE</strong>

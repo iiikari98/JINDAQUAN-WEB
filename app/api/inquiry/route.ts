@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 
 export const runtime = "nodejs";
 
-const requiredFields = ["Name", "Email", "Company", "Country", "Product Requirement"];
+const requiredFields = ["Name", "Email", "Company", "Country", "Product Requirement", "Message"];
 
 function readValue(formData: FormData, key: string) {
   const value = formData.get(key);
