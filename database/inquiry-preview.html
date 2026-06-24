@@ -1,0 +1,765 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ARGIOPE 询盘工作台预览</title>
+    <style>
+      :root {
+        --ink: #10231e;
+        --muted: #64736d;
+        --line: #dce8e3;
+        --soft: #f3f8f5;
+        --teal: #087f70;
+        --blue: #29549b;
+        --green: #9dc929;
+        --warn: #b7791f;
+        --bad: #a33b3b;
+        --white: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #f7faf8;
+        color: var(--ink);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .shell {
+        min-height: 100vh;
+        display: grid;
+        grid-template-columns: 250px minmax(0, 1fr);
+      }
+
+      aside {
+        border-right: 1px solid var(--line);
+        background: #0f211d;
+        color: #eff7f3;
+        padding: 24px 18px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 34px;
+      }
+
+      .mark {
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+        background:
+          radial-gradient(circle at center, #0f211d 0 28%, transparent 29%),
+          conic-gradient(from 12deg, var(--green), var(--blue), var(--green), var(--blue), var(--green));
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.4);
+      }
+
+      .brand strong {
+        display: block;
+        letter-spacing: 0.08em;
+      }
+
+      .brand span {
+        color: #b7c7c1;
+        font-size: 12px;
+      }
+
+      nav {
+        display: grid;
+        gap: 8px;
+      }
+
+      nav a {
+        border-radius: 8px;
+        color: #d8e7e2;
+        padding: 11px 12px;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      nav a.active,
+      nav a:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+      }
+
+      main {
+        padding: 26px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      h1 {
+        margin: 0 0 6px;
+        font-size: 28px;
+      }
+
+      .topbar p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      button {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--white);
+        color: var(--ink);
+        cursor: default;
+        font: inherit;
+        font-weight: 800;
+        padding: 10px 14px;
+      }
+
+      button.primary {
+        border-color: var(--teal);
+        background: var(--teal);
+        color: #ffffff;
+      }
+
+      .internal-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        margin-bottom: 10px;
+        border: 1px solid rgba(8, 127, 112, 0.24);
+        border-radius: 999px;
+        background: #eaf7f2;
+        color: var(--teal);
+        font-size: 12px;
+        font-weight: 900;
+        padding: 7px 10px;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+
+      .metric {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--white);
+        padding: 16px;
+      }
+
+      .metric span {
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .metric strong {
+        display: block;
+        margin-top: 10px;
+        font-size: 30px;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.35fr) minmax(380px, 0.8fr);
+        gap: 18px;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--white);
+        overflow: hidden;
+      }
+
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--line);
+        padding: 14px 16px;
+      }
+
+      .panel-head h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .filters {
+        display: flex;
+        gap: 8px;
+      }
+
+      .chip,
+      .status {
+        border-radius: 999px;
+        background: var(--soft);
+        color: var(--teal);
+        font-size: 12px;
+        font-weight: 900;
+        padding: 6px 9px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid var(--line);
+        padding: 13px 14px;
+        text-align: left;
+        vertical-align: top;
+      }
+
+      th {
+        color: var(--muted);
+        font-size: 12px;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      td {
+        font-size: 14px;
+      }
+
+      .customer strong {
+        display: block;
+      }
+
+      .customer {
+        width: 20%;
+      }
+
+      .customer span,
+      .contact-cell span,
+      .muted {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .contact-cell {
+        width: 24%;
+      }
+
+      .contact-cell a {
+        color: var(--ink);
+        display: block;
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.35;
+        text-decoration: none;
+        word-break: break-word;
+      }
+
+      .contact-cell a:hover {
+        color: var(--teal);
+        text-decoration: underline;
+      }
+
+      .contact-cell a + a {
+        margin-top: 4px;
+      }
+
+      .product-col {
+        width: 25%;
+      }
+
+      .country-col {
+        width: 9%;
+      }
+
+      .status-col {
+        width: 92px;
+      }
+
+      .next-col {
+        width: 14%;
+      }
+
+      .status.new {
+        background: #e6f5ef;
+        color: var(--teal);
+      }
+
+      .status.quoted {
+        background: #edf2ff;
+        color: var(--blue);
+      }
+
+      .status.follow {
+        background: #fff4db;
+        color: var(--warn);
+      }
+
+      td .status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 64px;
+        white-space: nowrap;
+      }
+
+      .detail {
+        padding: 18px;
+      }
+
+      .detail h3 {
+        margin: 0;
+        font-size: 22px;
+      }
+
+      .detail .sub {
+        margin: 6px 0 18px;
+        color: var(--muted);
+      }
+
+      .detail-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin: 0 0 16px;
+      }
+
+      .detail-actions button {
+        padding: 8px 11px;
+        font-size: 13px;
+      }
+
+      .section-block {
+        border-top: 1px solid var(--line);
+        margin-top: 16px;
+        padding-top: 16px;
+      }
+
+      .section-block h4 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 0 0 12px;
+        font-size: 15px;
+      }
+
+      .section-block h4 span {
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .field-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .field-grid.three {
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .field {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #fbfdfb;
+        padding: 12px;
+      }
+
+      .field span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 900;
+        margin-bottom: 6px;
+      }
+
+      .field strong {
+        font-size: 14px;
+      }
+
+      .note {
+        margin-top: 14px;
+        border-radius: 8px;
+        background: var(--soft);
+        padding: 14px;
+        color: #33443e;
+        line-height: 1.55;
+      }
+
+      .ai-card {
+        border: 1px solid rgba(8, 127, 112, 0.18);
+        border-radius: 8px;
+        background: linear-gradient(180deg, #f1faf6, #ffffff);
+        padding: 14px;
+      }
+
+      .ai-card strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .ai-card ul,
+      .mini-list {
+        margin: 0;
+        padding-left: 18px;
+        color: #33443e;
+        line-height: 1.55;
+      }
+
+      .doc-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        align-items: center;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 12px;
+      }
+
+      .doc-row + .doc-row {
+        margin-top: 8px;
+      }
+
+      .doc-row strong {
+        display: block;
+      }
+
+      .doc-row span {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .doc-row em {
+        border-radius: 999px;
+        background: #eef5f1;
+        color: var(--teal);
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 900;
+        padding: 6px 8px;
+      }
+
+      .timeline {
+        margin-top: 18px;
+      }
+
+      .timeline h4 {
+        margin: 0 0 12px;
+      }
+
+      .event {
+        border-left: 3px solid var(--teal);
+        padding: 0 0 14px 12px;
+      }
+
+      .event strong {
+        display: block;
+      }
+
+      .event span {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      @media (max-width: 980px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+
+        aside {
+          display: none;
+        }
+
+        .metrics,
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <aside>
+        <div class="brand">
+          <div class="mark" aria-hidden="true"></div>
+          <div>
+            <strong>ARGIOPE</strong>
+            <span>询盘工作台</span>
+          </div>
+        </div>
+        <nav>
+          <a class="active" href="#">询盘</a>
+          <a href="#">跟进</a>
+          <a href="#">报价</a>
+          <a href="#">样品</a>
+          <a href="#">设置</a>
+        </nav>
+      </aside>
+
+      <main>
+        <header class="topbar">
+          <div>
+            <div class="internal-badge">仅限内部访问</div>
+            <h1>网站询盘</h1>
+            <p>仅供预览。此页面暂未连接正式网站或真实数据库。</p>
+          </div>
+          <div class="actions">
+            <button>导出</button>
+            <button class="primary">新增手动客户</button>
+          </div>
+        </header>
+
+        <section class="metrics" aria-label="Inquiry summary">
+          <div class="metric">
+            <span>今日新询盘</span>
+            <strong>3</strong>
+          </div>
+          <div class="metric">
+            <span>待跟进</span>
+            <strong>8</strong>
+          </div>
+          <div class="metric">
+            <span>已报价</span>
+            <strong>12</strong>
+          </div>
+          <div class="metric">
+            <span>样品阶段</span>
+            <strong>5</strong>
+          </div>
+        </section>
+
+        <section class="layout">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>近期询盘</h2>
+              <div class="filters">
+                <span class="chip">全部</span>
+                <span class="chip">新询盘</span>
+                <span class="chip">待跟进</span>
+              </div>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th class="customer">客户</th>
+                  <th class="contact-cell">联系方式</th>
+                  <th class="product-col">产品</th>
+                  <th class="country-col">国家</th>
+                  <th class="status-col">状态</th>
+                  <th class="next-col">下一步</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="customer">
+                    <strong>Alex Martin</strong>
+                    <span>Nova Polymer Trading</span>
+                  </td>
+                  <td class="contact-cell">
+                    <a href="mailto:alex@example.com">alex@example.com</a>
+                    <a href="https://wa.me/393200001820" target="_blank" rel="noreferrer">WhatsApp +39 320 000 1820</a>
+                  </td>
+                  <td class="product-col">Transparent Impact Modifier</td>
+                  <td class="country-col">Italy</td>
+                  <td class="status-col"><span class="status new">新询盘</span></td>
+                  <td class="next-col">24小时内回复</td>
+                </tr>
+                <tr>
+                  <td class="customer">
+                    <strong>Maria Santos</strong>
+                    <span>Andes Packaging</span>
+                  </td>
+                  <td class="contact-cell">
+                    <a href="mailto:maria@example.com">maria@example.com</a>
+                    <a href="tel:+551100002048">Tel +55 11 0000 2048</a>
+                  </td>
+                  <td class="product-col">Plastic Compatibilizer</td>
+                  <td class="country-col">Brazil</td>
+                  <td class="status-col"><span class="status quoted">已报价</span></td>
+                  <td class="next-col">跟进运费成本</td>
+                </tr>
+                <tr>
+                  <td class="customer">
+                    <strong>Kenji Watanabe</strong>
+                    <span>Functional Resin Lab</span>
+                  </td>
+                  <td class="contact-cell">
+                    <a href="mailto:kenji@example.jp">kenji@example.jp</a>
+                    <a href="https://wa.me/819000006612" target="_blank" rel="noreferrer">WhatsApp +81 90 0000 6612</a>
+                  </td>
+                  <td class="product-col">Light Diffusion Agent</td>
+                  <td class="country-col">Japan</td>
+                  <td class="status-col"><span class="status follow">待跟进</span></td>
+                  <td class="next-col">发送样品政策</td>
+                </tr>
+                <tr>
+                  <td class="customer">
+                    <strong>Ahmed Nasser</strong>
+                    <span>Gulf Cable Materials</span>
+                  </td>
+                  <td class="contact-cell">
+                    <a href="mailto:ahmed@example.ae">ahmed@example.ae</a>
+                    <a href="tel:+971500007188">Tel +971 50 000 7188</a>
+                  </td>
+                  <td class="product-col">Plastic Flame Retardant</td>
+                  <td class="country-col">UAE</td>
+                  <td class="status-col"><span class="status new">新询盘</span></td>
+                  <td class="next-col">询问应用细节</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <aside class="panel" aria-label="Selected inquiry detail">
+            <div class="panel-head">
+              <h2>客户详情</h2>
+              <span class="status new">新询盘</span>
+            </div>
+            <div class="detail">
+              <h3>Nova Polymer Trading</h3>
+              <p class="sub">透明材料增韧改性询盘</p>
+              <div class="detail-actions">
+                <button class="primary">生成客户摘要</button>
+                <button>导出客户档案</button>
+                <button>导出跟进记录</button>
+                <button>生成回复草稿</button>
+              </div>
+
+              <div class="field-grid">
+                <div class="field">
+                  <span>姓名</span>
+                  <strong>Alex Martin</strong>
+                </div>
+                <div class="field">
+                  <span>邮箱</span>
+                  <strong>alex@example.com</strong>
+                </div>
+                <div class="field">
+                  <span>国家</span>
+                  <strong>Italy</strong>
+                </div>
+                <div class="field">
+                  <span>优先级</span>
+                  <strong>高</strong>
+                </div>
+              </div>
+
+              <div class="section-block">
+                <h4>询盘需求 <span>来自官网表单</span></h4>
+                <div class="note">
+                  客户希望寻找一款在保持原有透明度的同时提升冲击强度和耐寒性能的添加剂。建议进一步询问树脂牌号、目标添加比例和当前测试标准。
+                </div>
+              </div>
+
+              <div class="section-block">
+                <h4>客户画像 <span>自动汇总预览</span></h4>
+                <div class="ai-card">
+                  <strong>Codex 汇总建议</strong>
+                  <ul>
+                    <li>客户需求明确，匹配透明增韧剂，优先级较高。</li>
+                    <li>下一封邮件应确认基材、透明度要求、测试温度和年采购量。</li>
+                    <li>可推荐先寄小样，并附 TDS / SDS / 典型添加比例。</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="section-block">
+                <h4>关键资料</h4>
+                <div class="field-grid three">
+                  <div class="field">
+                    <span>客户来源</span>
+                    <strong>官网询盘</strong>
+                  </div>
+                  <div class="field">
+                    <span>目标产品</span>
+                    <strong>透明增韧剂</strong>
+                  </div>
+                  <div class="field">
+                    <span>当前阶段</span>
+                    <strong>待首次回复</strong>
+                  </div>
+                  <div class="field">
+                    <span>最近联系</span>
+                    <strong>尚未联系</strong>
+                  </div>
+                  <div class="field">
+                    <span>下次跟进</span>
+                    <strong>今天 16:00</strong>
+                  </div>
+                  <div class="field">
+                    <span>负责人</span>
+                    <strong>Alex</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="section-block">
+                <h4>报价 / 样品记录 <span>未来可自动生成</span></h4>
+                <div class="doc-row">
+                  <div>
+                    <strong>透明增韧剂小样建议</strong>
+                    <span>建议先发 500g 样品，确认基材和测试标准后报价</span>
+                  </div>
+                  <em>待创建</em>
+                </div>
+                <div class="doc-row">
+                  <div>
+                    <strong>Quotation / PI</strong>
+                    <span>后续可从客户详情直接生成报价单、PI、CI</span>
+                  </div>
+                  <em>可扩展</em>
+                </div>
+              </div>
+
+              <div class="section-block">
+                <h4>自动化导出</h4>
+                <ul class="mini-list">
+                  <li>导出当前客户档案：客户信息、需求、状态、备注。</li>
+                  <li>导出跟进记录：邮件、WhatsApp、报价、样品节点。</li>
+                  <li>导出给我的汇总包：方便我继续帮你生成回复、报价和跟进计划。</li>
+                </ul>
+              </div>
+
+              <div class="timeline section-block">
+                <h4>跟进记录</h4>
+                <div class="event">
+                  <strong>收到询盘</strong>
+                  <span>今天 10:42，来自网站表单</span>
+                </div>
+                <div class="event">
+                  <strong>建议下一步</strong>
+                  <span>准备首次回复，并向客户确认应用细节</span>
+                </div>
+                <div class="event">
+                  <strong>可由我接管汇总</strong>
+                  <span>后续你可以把邮件、聊天截图或报价资料发给我，我将整理成客户状态和下一步动作。</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
