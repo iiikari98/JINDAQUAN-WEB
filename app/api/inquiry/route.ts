@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { existsSync } from "node:fs";
+import path from "node:path";
+import { findTdsDocument } from "../../lib/tds-documents";
 
 export const runtime = "nodejs";
 
@@ -41,16 +44,32 @@ function formatHtml(fields: Record<string, string>) {
 
 export async function POST(request: Request) {
   const formData = await request.formData();
+  const requestType = readValue(formData, "Request Type") || "RFQ";
+  const tdsProduct = readValue(formData, "TDS Product");
+  const tdsModel = readValue(formData, "TDS Model");
   const fields = {
+    "Request Type": requestType,
     Name: readValue(formData, "Name"),
     Email: readValue(formData, "Email"),
     Company: readValue(formData, "Company"),
     Country: readValue(formData, "Country"),
-    "Product Requirement": readValue(formData, "Product Requirement"),
+    "Product Requirement": readValue(formData, "Product Requirement") || tdsProduct,
+    "TDS Product": tdsProduct,
+    "TDS Model": tdsModel,
     Message: readValue(formData, "Message"),
   };
+  const requestedDocument = findTdsDocument(fields["Product Requirement"], fields["TDS Model"]);
+  const publicDir = path.join(process.cwd(), "public");
+  const documentFileExists = requestedDocument
+    ? existsSync(path.join(publicDir, "tds", requestedDocument.filename))
+    : false;
+  const documentUrl =
+    requestedDocument && documentFileExists ? new URL(requestedDocument.href, request.url).toString() : "";
 
   const missing = requiredFields.filter((field) => !fields[field as keyof typeof fields]);
+  if (requestType === "TDS Request" && !tdsModel) {
+    missing.push("TDS Model");
+  }
   if (missing.length > 0) {
     return NextResponse.json({ message: `Missing required field: ${missing.join(", ")}` }, { status: 400 });
   }
@@ -87,16 +106,31 @@ export async function POST(request: Request) {
 
   const text = Object.entries(fields)
     .map(([key, value]) => `${key}: ${value || "-"}`)
-    .join("\n");
+    .join("\n")
+    .concat(documentUrl ? `\nTDS link shown to buyer: ${documentUrl}` : "\nTDS link shown to buyer: Not available yet");
 
   await transporter.sendMail({
     from: `"ARGIOPE Website RFQ" <${from}>`,
     to,
     replyTo: fields.Email,
-    subject: `New RFQ from ${fields.Company} - ${fields.Country}`,
+    subject:
+      requestType === "TDS Request"
+        ? `New TDS request: ${fields["TDS Model"]} - ${fields.Company}`
+        : `New RFQ from ${fields.Company} - ${fields.Country}`,
     text,
-    html: formatHtml(fields),
+    html: formatHtml({
+      ...fields,
+      "TDS link shown to buyer": documentUrl || "Not available yet",
+    }),
   });
 
-  return NextResponse.json({ message: "Inquiry sent successfully. Please check the business mailbox." });
+  return NextResponse.json({
+    documentLink: documentUrl,
+    documentTitle: requestedDocument?.title || "",
+    message: documentUrl
+      ? "Inquiry sent successfully. The requested TDS link is ready below."
+      : requestType === "TDS Request"
+        ? "TDS request sent successfully. Our team will prepare the matching PDF for this model."
+        : "Inquiry sent successfully. Please check the business mailbox.",
+  });
 }

@@ -34,6 +34,32 @@ const productImages = [
 
 const proofIcons = [Building2, Factory, Beaker, Sparkles, CheckCircle2];
 const advantageIcons = [FlaskConical, Leaf, Target, ShieldCheck];
+const factoryHighlights = [
+  {
+    title: "Company identity",
+    text: "ARGIOPE / Jindaquan brand wall and reception environment for buyer confidence.",
+    image: "/assets/site-factory/argiope-company-logo-wall.webp",
+    alt: "ARGIOPE Jindaquan company logo wall",
+  },
+  {
+    title: "Production equipment",
+    text: "On-site plastic additive production equipment and workshop capability.",
+    image: "/assets/site-factory/plastic-additives-production-equipment.webp",
+    alt: "Plastic additives production equipment in Jindaquan factory",
+  },
+  {
+    title: "Raw material storage",
+    text: "Warehouse storage for packaged polymer additive materials and export supply.",
+    image: "/assets/site-factory/plastic-additives-warehouse-storage.webp",
+    alt: "Plastic additive raw material warehouse storage",
+  },
+  {
+    title: "Quality credentials",
+    text: "Patent, certification and quality documentation display for supplier review.",
+    image: "/assets/site-factory/jindaquan-certifications-patents-wall.webp",
+    alt: "Jindaquan certifications and patent display wall",
+  },
+];
 const factoryMapSrc =
   "https://www.openstreetmap.org/export/embed.html?bbox=114.7051%2C22.9728%2C114.7351%2C22.9968&layer=mapnik&marker=22.9848%2C114.7201";
 
@@ -41,6 +67,7 @@ export default function Home() {
   const { t } = useI18n();
   const [inquiryStatus, setInquiryStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [inquiryMessage, setInquiryMessage] = useState("");
+  const [tdsDownload, setTdsDownload] = useState<{ href: string; title: string } | null>(null);
 
   useEffect(() => {
     if (window.location.search && window.location.hash === "#contact") {
@@ -61,7 +88,7 @@ export default function Home() {
         method: "POST",
         body: formData,
       });
-      const result = (await response.json()) as { message?: string };
+      const result = (await response.json()) as { documentLink?: string; documentTitle?: string; message?: string };
 
       if (!response.ok) {
         throw new Error(result.message || "Unable to send inquiry.");
@@ -69,10 +96,12 @@ export default function Home() {
 
       setInquiryStatus("success");
       setInquiryMessage(result.message || "Inquiry sent successfully. We will contact you soon.");
+      setTdsDownload(result.documentLink ? { href: result.documentLink, title: result.documentTitle || "TDS PDF" } : null);
       form.reset();
     } catch (error) {
       setInquiryStatus("error");
       setInquiryMessage(error instanceof Error ? error.message : "Unable to send inquiry.");
+      setTdsDownload(null);
     }
   }
 
@@ -90,7 +119,7 @@ export default function Home() {
               <Mail size={18} />
               {t.hero.quote}
             </a>
-            <a className="button button-secondary" href="#support">
+            <a className="button button-secondary" href="/tds">
               <FileText size={18} />
               {t.hero.docs}
             </a>
@@ -185,6 +214,34 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="factory-section" id="factory">
+        <div className="factory-copy">
+          <span>Factory & Quality</span>
+          <h2>Real manufacturing scenes for buyer review</h2>
+          <p>
+            Review ARGIOPE Jindaquan through real factory, warehouse, equipment and certification
+            visuals before sending your plastic additive RFQ.
+          </p>
+          <div className="factory-stats" aria-label="Factory capability summary">
+            <strong>Since 1998</strong>
+            <strong>7000+ m² factory</strong>
+            <strong>30+ patents</strong>
+          </div>
+        </div>
+
+        <div className="factory-gallery" aria-label="ARGIOPE Jindaquan factory and quality photos">
+          {factoryHighlights.map((item) => (
+            <article className="factory-photo-card" key={item.title}>
+              <img src={item.image} alt={item.alt} loading="lazy" />
+              <div>
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="section applications" id="applications">
         <div className="section-heading">
           <span>{t.applications.kicker}</span>
@@ -213,7 +270,7 @@ export default function Home() {
           <h2>{t.support.title}</h2>
           <p>{t.support.body}</p>
         </div>
-        <a className="button button-primary" href="#contact">
+        <a className="button button-primary" href="/tds">
           {t.support.cta}
           <ArrowRight size={18} />
         </a>
@@ -310,6 +367,7 @@ export default function Home() {
               onClick={() => {
                 setInquiryStatus("idle");
                 setInquiryMessage("");
+                setTdsDownload(null);
               }}
             >
               <X size={18} />
@@ -323,16 +381,25 @@ export default function Home() {
               Your request has been sent to the ARGIOPE Jindaquan team. We will review your material,
               application and target performance, then contact you by email.
             </p>
-            <button
-              className="button button-primary"
-              type="button"
-              onClick={() => {
-                setInquiryStatus("idle");
-                setInquiryMessage("");
-              }}
-            >
-              Continue browsing
-            </button>
+            <div className="thank-you-actions">
+              {tdsDownload ? (
+                <a className="button button-primary" href={tdsDownload.href} target="_blank" rel="noreferrer">
+                  <FileText size={18} />
+                  Download TDS PDF
+                </a>
+              ) : null}
+              <button
+                className={tdsDownload ? "button button-secondary" : "button button-primary"}
+                type="button"
+                onClick={() => {
+                  setInquiryStatus("idle");
+                  setInquiryMessage("");
+                  setTdsDownload(null);
+                }}
+              >
+                Continue browsing
+              </button>
+            </div>
           </section>
         </div>
       ) : null}

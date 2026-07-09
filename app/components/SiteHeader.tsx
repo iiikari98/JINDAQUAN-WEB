@@ -87,7 +87,7 @@ export function SiteHeader({ anchorPrefix = "" }: { anchorPrefix?: "" | "/" }) {
               {t.mega.support.actions.map((action, index) => {
                 const Icon = supportIcons[index];
                 return (
-                  <a href={index === 0 ? sectionHref("#support") : sectionHref("#contact")} key={action.title}>
+                  <a href={index === 0 ? "/tds" : sectionHref("#contact")} key={action.title}>
                     <Icon size={20} />
                     <strong>{action.title}</strong>
                     <span>{action.body}</span>
@@ -126,7 +126,7 @@ export function SiteHeader({ anchorPrefix = "" }: { anchorPrefix?: "" | "/" }) {
                 <div key={column.title}>
                   <h3>{column.title}</h3>
                   {column.links.map((link, index) => (
-                    <a href={index === 0 ? sectionHref("#support") : sectionHref("#contact")} key={link}>
+                    <a href={index === 0 ? "/tds" : sectionHref("#contact")} key={link}>
                       {link}
                     </a>
                   ))}
