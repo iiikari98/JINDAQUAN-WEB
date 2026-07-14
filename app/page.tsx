@@ -25,6 +25,13 @@ import { useI18n } from "./i18n/I18nProvider";
 import { getFeaturedProducts } from "./lib/product-catalog";
 
 const proofIcons = [Building2, Factory, Beaker, Sparkles, CheckCircle2];
+const heroTrustMeta = [
+  { label: "Manufacturing history", Icon: Building2 },
+  { label: "Factory capacity", Icon: Factory },
+  { label: "Technical patents", Icon: Beaker },
+  { label: "Quality system", Icon: ShieldCheck },
+  { label: "Compliance review", Icon: CheckCircle2 },
+];
 const advantageIcons = [FlaskConical, Leaf, Target, ShieldCheck];
 const trustPartners = ["BASF", "Sinopec", "BYD", "Gree", "Midea", "Mixue Bingcheng"];
 const factoryHighlights = [
@@ -119,9 +126,18 @@ export default function Home() {
             </a>
           </div>
           <div className="hero-trust" aria-label="Company proof points">
-            {t.hero.trust.map((item) => (
-              <span key={item}>{item}</span>
-            ))}
+            {t.hero.trust.map((item, index) => {
+              const meta = heroTrustMeta[index] || heroTrustMeta[heroTrustMeta.length - 1];
+              const Icon = meta.Icon;
+
+              return (
+                <span key={item}>
+                  <Icon size={16} />
+                  <strong>{item}</strong>
+                  <small>{meta.label}</small>
+                </span>
+              );
+            })}
           </div>
         </div>
 
