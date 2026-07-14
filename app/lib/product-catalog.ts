@@ -1,3 +1,5 @@
+import { getGradesByProductSlug } from "./product-grades";
+
 export type ProductCatalogItem = {
   slug: string;
   name: string;
@@ -10,6 +12,7 @@ export type ProductCatalogItem = {
   benefits: string[];
   processing: string[];
   keywords: string[];
+  materials?: string[];
   contentStatus?: "draft" | "catalog-reviewed" | "tds-reviewed" | "final";
   sourceRefs?: string[];
   documents?: {
@@ -54,6 +57,55 @@ const processNotes = [
   "Use TDS/SDS and small-batch testing to confirm dosage, appearance and final performance before mass production.",
 ];
 
+const broadPlasticMaterials = [
+  "PP",
+  "PE",
+  "PVC",
+  "TPU",
+  "ABS",
+  "PC",
+  "PPS",
+  "PA",
+  "PET",
+  "PETG",
+  "POM",
+  "PBT",
+  "PMMA",
+  "HIPS",
+  "GPPS",
+  "PPO",
+  "AS",
+  "PLA",
+  "PBAT",
+];
+
+const commonTransparentMaterials = ["PP", "ABS", "PC", "PET", "PETG", "PMMA", "GPPS", "AS"];
+const broadSurfaceMaterials = ["PP", "PE", "PVC", "TPU", "ABS", "PC", "PA", "PET", "PETG", "POM", "PBT", "PMMA", "HIPS", "GPPS", "AS", "PLA", "PBAT"];
+const generalPurposeMaterials = ["General-purpose plastic systems"];
+const materialSearchTokens = new Set([
+  "PP",
+  "PE",
+  "PVC",
+  "TPU",
+  "ABS",
+  "PC",
+  "PPS",
+  "PA",
+  "PET",
+  "PETG",
+  "POM",
+  "PBT",
+  "PMMA",
+  "HIPS",
+  "GPPS",
+  "PPO",
+  "AS",
+  "PLA",
+  "PBAT",
+  "PS",
+  "EVA",
+]);
+
 export const productCatalog: ProductCatalogItem[] = [
   {
     slug: "transparent-impact-modifier-granule",
@@ -62,6 +114,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Improves toughness, impact strength and elongation while helping clear plastics keep their original transparency.",
     image: "/assets/transparent-impact-modifier-granules-angle.png",
     category: "Transparent impact modification",
+    materials: commonTransparentMaterials,
     description:
       "A direct-add toughening granule for transparent or translucent plastics where buyers need better impact resistance without turning the part cloudy or changing the original appearance.",
     applications: [
@@ -94,6 +147,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Enhances hardness, flexural modulus and ring stiffness while helping products maintain stable dimensions.",
     image: "/assets/plastic-stiffening-agent-colored-masterbatch.png",
     category: "Stiffness and dimension control",
+    materials: ["PP", "PE"],
     description:
       "Designed for PP, PE and related plastic products that need higher rigidity, better dimensional stability and stronger structural feel without a complicated process change.",
     applications: [
@@ -126,6 +180,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Flame-retardant additive support for PP, PE, ABS, PC, PET and PA applications, including glow-wire review.",
     image: "/assets/plastic-flame-retardant-burn-test.png",
     category: "Flame retardant modification",
+    materials: ["PP", "PE", "ABS", "PC", "PET", "PETG", "PS", "PA"],
     description:
       "A practical flame-retardant solution for plastic parts where buyers need safety performance, processing fit and mechanical property balance reviewed together.",
     applications: [
@@ -159,6 +214,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Supports interface bonding, filler dispersion and property balance in filled or blended polymer compounds.",
     image: "/assets/plastic-compatibilizer-powder-pellets-v3.png",
     category: "Compounding interface support",
+    materials: ["PP", "filled compounds", "polymer blends", "recycled plastics"],
     description:
       "Used for filled compounds, polymer blends and recycled modification projects where the interface between resin, filler and additive package controls the final mechanical result.",
     applications: [
@@ -191,6 +247,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Balances LED hiding, haze and high light transmittance for transparent lighting plastics.",
     image: "/assets/light-diffusion-powder-diffuser.png",
     category: "Optical and lighting plastics",
+    materials: ["PP", "PVC", "ABS", "PC", "PA", "PET", "PETG", "PMMA", "GPPS", "AS"],
     description:
       "An optical diffusion additive for transparent lighting materials that need smoother light output, reduced lamp-bead visibility and controlled haze without sacrificing too much transmission.",
     applications: [
@@ -223,6 +280,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Low-temperature molding plastisol for filter cartridges, gaskets, sealing strips and custom formed parts.",
     image: "/assets/modified-pvc-liquid-plastisol-closeup.png",
     category: "Special engineering plastics",
+    materials: ["Modified PVC plastisol systems"],
     description:
       "A modified PVC plastisol solution for sealing and formed-part applications where lower-temperature processing, odor control and energy saving are important selection points.",
     applications: [
@@ -256,6 +314,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Low-dosage liquid toughening support for transparent and flame-retardant plastic modification.",
     image: "/assets/transparent-impact-modifier-granules-angle.png",
     category: "Transparent impact modification",
+    materials: broadPlasticMaterials,
     description:
       "A liquid impact modifier for plastic systems that need improved toughness with very low addition levels and minimal influence on original transparency.",
     applications: [
@@ -281,6 +340,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Improves impact strength, compatibility, lubrication and cold resistance in non-transparent plastic products.",
     image: "/assets/plastic-compatibilizer-powder-pellets-v3.png",
     category: "Impact and toughness modification",
+    materials: broadPlasticMaterials,
     description:
       "A direct-add impact modifier for opaque plastics where toughness, low-temperature resistance and processing balance are more important than optical clarity.",
     applications: [
@@ -306,6 +366,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Improves low-temperature toughness and anti-freeze performance for plastic products.",
     image: "/assets/transparent-impact-modifier-granules-angle.png",
     category: "Low-temperature performance",
+    materials: broadPlasticMaterials,
     description:
       "An anti-cold modifier for products exposed to low temperature, shipping stress or cold climates where brittle failure needs to be reduced.",
     applications: [
@@ -331,6 +392,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Creates a durable frosted matte surface while preserving smooth feel and cleanability.",
     image: "/assets/plastic-stiffening-agent-colored-masterbatch.png",
     category: "Surface appearance modification",
+    materials: broadSurfaceMaterials,
     description:
       "A matte additive for plastic surfaces that need lower gloss, higher haze and a premium frosted visual effect without paint or secondary surface treatment.",
     applications: [
@@ -357,6 +419,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Improves surface brightness, dispersion, flow and smooth feel for plastic products.",
     image: "/assets/light-diffusion-powder-diffuser.png",
     category: "Surface appearance modification",
+    materials: generalPurposeMaterials,
     description:
       "A gloss and surface modifier for plastic products that need higher brightness, smoother feel and better processing without obvious loss of transparency.",
     applications: [
@@ -382,6 +445,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Improves PP transparency and light transmittance for clear polypropylene products.",
     image: "/assets/transparent-impact-modifier-granules-angle.png",
     category: "PP optical modification",
+    materials: ["PP"],
     description:
       "A PP clarifying masterbatch for polypropylene products where higher transparency and cleaner visual appearance are key buyer requirements.",
     applications: [
@@ -407,6 +471,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Adds antibacterial and anti-mildew performance for toys, household products, kitchenware and electronics.",
     image: "/assets/plastic-stiffening-agent-colored-masterbatch.png",
     category: "Hygiene and protection additives",
+    materials: ["PP", "PE", "PVC", "TPU", "ABS", "PC", "PA", "PET", "PETG", "POM", "PMMA", "HIPS", "GPPS", "AS", "PLA", "PBAT"],
     description:
       "A functional additive for plastic products that need antibacterial or mould-resistant performance while keeping normal processing routes practical.",
     applications: [
@@ -432,6 +497,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Adjusts melt flow, improves fluidity and helps solve weld-line or processing issues.",
     image: "/assets/modified-pvc-liquid-plastisol-closeup.png",
     category: "Processing and flow control",
+    materials: ["PP", "PE"],
     description:
       "A flow-control additive for PP and PE projects where melt flow, gloss, weld-line cracking or extrusion behavior needs to be tuned.",
     applications: [
@@ -457,6 +523,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Helps reduce warping, control shrinkage and stabilize dimensions in thin-wall plastic products.",
     image: "/assets/plastic-stiffening-agent-colored-masterbatch.png",
     category: "Dimension control",
+    materials: ["PP", "PE", "general plastic systems"],
     description:
       "A stabilizing additive for molded plastic parts that suffer from warping, bending or shrinkage variation, especially in thin-wall structures.",
     applications: [
@@ -482,6 +549,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Reduces static buildup, dust attraction and static-related handling risk in plastic products.",
     image: "/assets/plastic-stiffening-agent-colored-masterbatch.png",
     category: "Static control additives",
+    materials: broadPlasticMaterials,
     description:
       "An antistatic additive for plastics where static electricity, dust absorption or handling safety creates quality and production concerns.",
     applications: [
@@ -507,6 +575,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Improves scratch resistance, slip feel and surface smoothness without obvious transparency loss.",
     image: "/assets/light-diffusion-powder-diffuser.png",
     category: "Surface performance additives",
+    materials: broadSurfaceMaterials,
     description:
       "A surface modifier for plastic products where smooth hand feel, lower scratch visibility and surface durability matter to the final user experience.",
     applications: [
@@ -532,6 +601,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Improves heat resistance and dimensional stability for selected transparent plastic materials.",
     image: "/assets/plastic-flame-retardant-burn-test.png",
     category: "Heat resistance modification",
+    materials: ["PET", "PMMA", "ABS", "AS", "GPPS"],
     description:
       "A heat stabilizing additive for transparent plastic applications that need higher heat distortion resistance while maintaining optical appearance as much as possible.",
     applications: [
@@ -557,6 +627,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Improves demolding performance and production efficiency while protecting transparent appearance.",
     image: "/assets/transparent-impact-modifier-granules-angle.png",
     category: "Processing aid",
+    materials: broadPlasticMaterials,
     description:
       "A transparent mold-release masterbatch for plastic products that need easier demolding, shorter cycles and stable appearance without heavy external release agents.",
     applications: [
@@ -582,6 +653,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Modified EVA support for corrugated hoses requiring heat resistance and lower dust adhesion.",
     image: "/assets/modified-pvc-liquid-plastisol-closeup.png",
     category: "Special engineering plastics",
+    materials: ["Modified EVA systems"],
     description:
       "A modified EVA material direction for hose, footwear, coil and profile applications where flexibility, heat resistance and surface cleanliness need to be balanced.",
     applications: [
@@ -607,6 +679,7 @@ export const productCatalog: ProductCatalogItem[] = [
     summary: "Custom modification for transparent resins needing toughness, heat resistance and flame retardance together.",
     image: "/assets/plastic-compatibilizer-powder-pellets-v3.png",
     category: "Custom modification",
+    materials: commonTransparentMaterials,
     description:
       "A customized development route for transparent resin projects where standard additives are not enough and multiple performance targets must be balanced in one formulation.",
     applications: [
@@ -683,9 +756,22 @@ export function validateProductCatalog() {
 }
 
 export function searchProducts(query: string) {
-  const normalized = query.trim().toLowerCase();
+  const rawQuery = query.trim();
+  const normalized = rawQuery.toLowerCase();
   if (!normalized) {
     return productCatalog;
+  }
+
+  const materialToken = rawQuery.toUpperCase();
+  if (materialSearchTokens.has(materialToken)) {
+    return productCatalog.filter((product) =>
+      (product.materials || generalPurposeMaterials).some((material) =>
+        material
+          .toUpperCase()
+          .split(/[^A-Z0-9]+/)
+          .includes(materialToken),
+      ),
+    );
   }
 
   return productCatalog.filter((product) =>
@@ -698,6 +784,8 @@ export function searchProducts(query: string) {
       ...product.applications,
       ...product.benefits,
       ...product.processing,
+      ...(product.materials || generalPurposeMaterials),
+      ...getGradesByProductSlug(product.slug),
       ...product.keywords,
     ]
       .join(" ")

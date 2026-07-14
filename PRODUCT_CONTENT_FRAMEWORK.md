@@ -22,6 +22,12 @@ All public product pages and search results are generated from:
 
 Each product has one stable `slug`. Do not rename a slug casually after a page has been published, because the URL depends on it.
 
+Product model / grade references are generated from:
+
+`app/lib/product-grades.ts`
+
+This file is the single source of truth for A-series model lists used by product detail pages, `/search`, and the TDS request selector. Keep star-marked models such as `A-656*` exactly as provided until the product team confirms what the star means.
+
 Required public fields:
 
 - `slug`: URL identifier, for example `plastic-flame-retardant`
@@ -90,6 +96,12 @@ Examples:
 - `Processing and flow control`
 
 ## TDS / SDS Rules
+
+The TDS selector reads available product families and models from:
+
+`app/lib/product-grades.ts`
+
+Do not maintain a separate duplicate model list inside the TDS page.
 
 Future TDS PDFs should be stored under:
 

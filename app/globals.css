@@ -875,8 +875,78 @@ img {
 
 .product-detail-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
+}
+
+.product-grade-panel {
+  margin: 0 0 28px;
+  padding: clamp(22px, 3vw, 32px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f7fbf8;
+}
+
+.product-grade-panel > span {
+  color: var(--green);
+  font-size: 0.82rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.product-grade-panel h3 {
+  margin: 10px 0 18px;
+  color: var(--green-dark);
+  font-size: clamp(1.35rem, 2vw, 2rem);
+  line-height: 1.12;
+}
+
+.product-grade-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.product-grade-groups article {
+  max-width: none;
+  margin: 0;
+  padding: 18px;
+  border: 1px solid #d7e8e2;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.product-grade-groups strong {
+  display: block;
+  color: var(--green-dark);
+  font-size: 1rem;
+}
+
+.product-grade-groups p {
+  margin: 8px 0 14px;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.45;
+}
+
+.product-grade-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.product-grade-tags span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 5px 10px;
+  border: 1px solid #d7e8e2;
+  border-radius: 999px;
+  background: #f1f8f5;
+  color: var(--green-dark);
+  font-size: 0.86rem;
+  font-weight: 800;
 }
 
 .product-detail-grid > div,
@@ -2050,6 +2120,7 @@ img {
   }
 
   .product-detail-grid,
+  .product-grade-groups,
   .catalog-category-list,
   .search-results-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2149,6 +2220,7 @@ img {
   .proof-strip,
   .product-grid,
   .product-detail-grid,
+  .product-grade-groups,
   .catalog-stats-grid,
   .catalog-category-list,
   .trust-logo-grid,

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight, CheckCircle2, FileText, Search } from "lucide-react";
 import { SiteHeader } from "../../components/SiteHeader";
 import { getProductBySlug, productCatalog } from "../../lib/product-catalog";
+import { getGradeGroupsByProductSlug } from "../../lib/product-grades";
 
 type ProductPageProps = {
   params: Promise<{
@@ -41,6 +42,8 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
     notFound();
   }
 
+  const gradeGroups = getGradeGroupsByProductSlug(product.slug);
+
   return (
     <main>
       <SiteHeader anchorPrefix="/" />
@@ -73,7 +76,38 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
           <p>{product.description}</p>
         </article>
 
+        {gradeGroups.length > 0 ? (
+          <div className="product-grade-panel">
+            <span>Representative Grades</span>
+            <h3>Available model references for this product family</h3>
+            <div className="product-grade-groups">
+              {gradeGroups.map((group) => (
+                <article key={group.product}>
+                  <strong>{group.product}</strong>
+                  <p>{group.summary}</p>
+                  <div className="product-grade-tags">
+                    {group.grades.map((grade) => (
+                      <span key={grade}>{grade}</span>
+                    ))}
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
         <div className="product-detail-grid">
+          <div>
+            <h3>Applicable Materials</h3>
+            <ul>
+              {(product.materials || ["General-purpose plastic systems"]).map((item) => (
+                <li key={item}>
+                  <CheckCircle2 size={18} />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
           <div>
             <h3>Typical Applications</h3>
             <ul>
