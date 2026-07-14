@@ -22,18 +22,11 @@ import {
 } from "lucide-react";
 import { SiteHeader } from "./components/SiteHeader";
 import { useI18n } from "./i18n/I18nProvider";
-
-const productImages = [
-  "/assets/transparent-impact-modifier-granules-angle.png",
-  "/assets/plastic-stiffening-agent-colored-masterbatch.png",
-  "/assets/plastic-flame-retardant-burn-test.png",
-  "/assets/plastic-compatibilizer-powder-pellets-v3.png",
-  "/assets/light-diffusion-powder-diffuser.png",
-  "/assets/modified-pvc-liquid-plastisol-closeup.png",
-];
+import { getFeaturedProducts } from "./lib/product-catalog";
 
 const proofIcons = [Building2, Factory, Beaker, Sparkles, CheckCircle2];
 const advantageIcons = [FlaskConical, Leaf, Target, ShieldCheck];
+const trustPartners = ["BASF", "Sinopec", "BYD", "Gree", "Midea", "Mixue Bingcheng"];
 const factoryHighlights = [
   {
     title: "Company identity",
@@ -65,6 +58,7 @@ const factoryMapSrc =
 
 export default function Home() {
   const { t } = useI18n();
+  const featuredProducts = getFeaturedProducts();
   const [inquiryStatus, setInquiryStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [inquiryMessage, setInquiryMessage] = useState("");
   const [tdsDownload, setTdsDownload] = useState<{ href: string; title: string } | null>(null);
@@ -159,6 +153,18 @@ export default function Home() {
         })}
       </section>
 
+      <section className="trust-band" aria-label="Customer and industry references">
+        <div>
+          <span>Customer References</span>
+          <h2>Trusted across plastic, packaging and consumer manufacturing supply chains</h2>
+        </div>
+        <div className="trust-logo-grid">
+          {trustPartners.map((partner) => (
+            <strong key={partner}>{partner}</strong>
+          ))}
+        </div>
+      </section>
+
       <section className="section" id="products">
         <div className="section-heading">
           <span>{t.products.kicker}</span>
@@ -167,15 +173,17 @@ export default function Home() {
         </div>
 
         <div className="product-grid">
-          {t.products.items.map((product, index) => (
+          {featuredProducts.map((product) => (
             <article className="product-card" key={product.name}>
-              <img src={productImages[index]} alt={`${product.name} ${t.products.altSuffix}`} />
+              <a className="product-image-link" href={`/products/${product.slug}`}>
+                <img src={product.image} alt={`${product.name} ${t.products.altSuffix}`} />
+              </a>
               <div className="product-card-body">
                 <p>{product.meta}</p>
                 <h3>{product.name}</h3>
                 <span>{product.summary}</span>
-                <a href="#contact" aria-label={`${t.products.cta}: ${product.name}`}>
-                  {t.products.cta}
+                <a href={`/products/${product.slug}`} aria-label={`View details: ${product.name}`}>
+                  View product details
                   <ArrowRight size={16} />
                 </a>
               </div>

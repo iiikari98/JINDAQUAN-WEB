@@ -140,6 +140,10 @@ export function SiteHeader({ anchorPrefix = "" }: { anchorPrefix?: "" | "/" }) {
           {t.nav.blog}
         </a>
 
+        <a className="nav-trigger plain-link" href="/search">
+          Search
+        </a>
+
         <a className="nav-trigger plain-link" href={sectionHref("#contact")}>
           {t.nav.contact}
         </a>
