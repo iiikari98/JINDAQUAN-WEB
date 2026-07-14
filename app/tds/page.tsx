@@ -94,7 +94,7 @@ export default function TdsRequestPage() {
             <select value={selectedModel} onChange={(event) => setSelectedModel(event.target.value)}>
               {selectedGroup?.models.map((model) => (
                 <option key={model.model} value={model.model}>
-                  {model.model} - {model.title.replace(" TDS", "")}
+                  {model.model} - {selectedGroup.product}
                 </option>
               ))}
             </select>

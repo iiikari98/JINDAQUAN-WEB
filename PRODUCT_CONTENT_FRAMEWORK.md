@@ -26,7 +26,7 @@ Product model / grade references are generated from:
 
 `app/lib/product-grades.ts`
 
-This file is the single source of truth for A-series model lists used by product detail pages, `/search`, and the TDS request selector. Keep star-marked models such as `A-656*` exactly as provided until the product team confirms what the star means.
+This file is the single source of truth for A-series model lists used by product detail pages, `/search`, and the TDS request selector.
 
 Required public fields:
 
